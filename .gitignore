@@ -1,0 +1,26 @@
+# Ignora file e cartelle generate da CLion
+.cmake/
+.idea/
+CMakeFiles/
+cmake-build-debug/
+CMakeCache.txt
+compile_commands.json
+*.iml
+*.ipr
+*.iws
+
+# Ignora eseguibili generati dal compilatore
+*.exe
+*.out
+
+# Ignora file di backup
+*~
+
+# Ignora file oggetto e librerie
+*.o
+*.a
+
+# Ignora file di configurazione utente di CLion
+workspace.xml
+clion_settings.xml
+
