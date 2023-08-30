@@ -67,6 +67,40 @@ ReadOnlyTree<int>* genRandomIntTree(){
     return tree;
 }
 
+// Pretty print a tree, go new line for each level
+template<class T>
+void printTreeAtLevels(ReadOnlyTree<T> tree) {
+    // Create a list of nodes
+    list<typename ReadOnlyTree<T>::Node *> nodes;
+
+    // Add the root to the list
+    nodes.push_back(tree.root());
+
+    // While the list is not empty
+    while (!nodes.empty()) {
+        // Get the first node
+        typename ReadOnlyTree<T>::Node *node = nodes.front();
+        // Remove the first node
+        nodes.pop_front();
+
+        // Print the value of the node
+        cout << tree.read(node) << " ";
+
+        // If the node has children
+        if (!tree.leaf(node)) {
+            // Add the first child to the list
+            nodes.push_back(tree.firstChild(node));
+            // While the node has a next sibling
+            while (!tree.lastSibling(nodes.back())) {
+                // Add the next sibling to the list
+                nodes.push_back(tree.nextSibling(nodes.back()));
+            }
+            // Go new line
+            cout << endl;
+        }
+    }
+}
+
 
 // Function to print the tree, go new line for each level
 template<class T>
@@ -108,10 +142,15 @@ int main() {
 
     // Generate a random tree
     tree = *genRandomIntTree();
-    postVisita(&tree);
+    //postVisita(&tree);
 
     // Print the tree
-    //printTree(tree);
+    cout << "The tree is " << (tree.empty() ? "empty" : "not empty") << endl;
+    printTree(tree);
+
+    // Print the tree at levels
+    cout << "The tree is " << (tree.empty() ? "empty" : "not empty") << endl;
+    printTreeAtLevels(tree);
 
 
     return 0;
