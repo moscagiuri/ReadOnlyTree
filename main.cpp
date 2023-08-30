@@ -5,7 +5,68 @@
 
 using namespace std;
 
-// Function to print the tree signature
+template <typename T> void postVisita(ReadOnlyTree<T>* tree, typename ReadOnlyTree<T>::Node* node){
+
+    if(!(tree->leaf(node))){
+
+        typename ReadOnlyTree<T>::Node* current_node = tree->firstChild(node);
+        typename ReadOnlyTree<T>::Node* temp_current_node = current_node;
+        postVisita(tree, current_node);
+        current_node = temp_current_node;
+
+        while(tree->lastSibling(current_node)){
+            current_node = tree->nextSibling(current_node);
+            temp_current_node = current_node;
+            postVisita(tree, current_node);
+            current_node = temp_current_node;
+        }
+    }
+
+
+    // esamina nodo
+    std::cout << tree->read(node) << "\t";
+
+}
+
+template <typename T> void postVisita(ReadOnlyTree<T>* tree){
+    postVisita(tree, tree->root());
+}
+
+void genRandomIntChild(ReadOnlyTree<int>* tree, ReadOnlyTree<int>::Node* current_node, int n_child){
+    cout << n_child << endl;
+    for(int i=0; i<n_child; i++){
+
+        if(i==0){
+            current_node = tree->insFirst(current_node);
+        }else if(i==n_child-1){
+            current_node = tree->insLast(current_node);
+        }else{
+            current_node = tree->insNext(current_node);
+        }
+
+        tree->write(current_node, 1+(rand()%11));
+        ReadOnlyTree<int>::Node* temp_node = current_node;
+        genRandomIntChild(tree, current_node, n_child-1);
+        current_node = temp_node;
+    }
+}
+
+
+ReadOnlyTree<int>* genRandomIntTree(){
+    srand((unsigned) time(NULL));
+
+    ReadOnlyTree<int>* tree = new ReadOnlyTree<int>();
+    ReadOnlyTree<int>::Node* current_node;
+
+    tree->insRoot();
+    tree->write( tree->root(), 1+(rand()%11) );
+    current_node = tree->root();
+
+    genRandomIntChild(tree, current_node, 5);
+
+    return tree;
+}
+
 
 // Function to print the tree, go new line for each level
 template<class T>
@@ -42,48 +103,15 @@ void printTree(ReadOnlyTree<T> tree) {
 int main() {
 
     // Create a tree
-    ReadOnlyTree<float> tree = ReadOnlyTree<float>();
-
-    // Check if the tree is empty
-    if (tree.empty())
-        std::cout << "The tree is empty" << std::endl;
-    else
-        std::cout << "The tree is not empty" << std::endl;
-
-    // Add a root
-    ReadOnlyTree<float>::Node *root = tree.insRoot();
-
-    // Check if the tree is empty
-    if (tree.empty())
-        std::cout << "The tree is empty" << std::endl;
-    else
-        std::cout << "The tree is not empty" << std::endl;
+    ReadOnlyTree<int> tree;
 
 
-    // Insert a first child
-    ReadOnlyTree<float>::Node *firstChild = tree.insFirst(root);
-
-    // Insert a second child
-    ReadOnlyTree<float>::Node *secondChild = tree.insNext(firstChild);
-
-    // Insert a third child as last child
-    ReadOnlyTree<float>::Node *thirdChild = tree.insLast(secondChild);
-
-    // Insert a first child of the second child
-    ReadOnlyTree<float>::Node *firstChildOfSecondChild = tree.insFirst(secondChild);
-    // Insert a second child of the second child
-    ReadOnlyTree<float>::Node *secondChildOfSecondChild = tree.insNext(firstChildOfSecondChild);
-    // Insert a last child of the second child
-    ReadOnlyTree<float>::Node *thirdChildOfSecondChild = tree.insLast(secondChildOfSecondChild);
-
-    // Insert a first child of the third child
-    ReadOnlyTree<float>::Node *firstChildOfThirdChild = tree.insFirst(thirdChild);
-    // Insert a last child of the third child
-    ReadOnlyTree<float>::Node *secondChildOfThirdChild = tree.insLast(firstChildOfThirdChild);
-
+    // Generate a random tree
+    tree = *genRandomIntTree();
+    postVisita(&tree);
 
     // Print the tree
-    printTree(tree);
+    //printTree(tree);
 
 
     return 0;
