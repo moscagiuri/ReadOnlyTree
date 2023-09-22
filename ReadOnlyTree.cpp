@@ -1,15 +1,13 @@
 //
 // Created by h1tman2 on 27/08/23.
+//
 
-using namespace std;
 
-
-template <class T>
+template<class T>
 class ReadOnlyTree {
 
 
 public:
-
     // Struct for the nodes
     struct Node {
         // Value of the node
@@ -26,19 +24,29 @@ public:
 
     // Tree operations
     ReadOnlyTree();
-    bool empty() ;
-    Node * insRoot() ;
-    Node * root() ;
+
+    bool empty();
+
+    Node *insRoot();
+
+    Node *root();
+
     Node parent(Node n) const;
-    Node * firstChild(Node *n) const;
-    Node * nextSibling(Node *n) const;
+
+    Node *firstChild(Node *n) const;
+
+    Node *nextSibling(Node *n) const;
+
     bool lastSibling(Node *n) const;
+
     bool leaf(Node *n) const;
+
     T read(Node *n) const;
+
     void write(Node *n, const T &val);
 
     // Insert a new node as the first child of a given node
-    Node *insFirst(Node* n);
+    Node *insFirst(Node *n);
 
     // Insert a new node as the last child of a given node
     Node *insLast(Node *n);
@@ -52,8 +60,12 @@ public:
     // Get level of a node
     int level(Node *n) const;
 
+    Node *insRoot(T val);
 
-    };
+    Node *insFirst(Node *n, T val);
+
+    Node *insNext(Node *n, T val = nullptr);
+};
 
 template<class T>
 ReadOnlyTree<T>::ReadOnlyTree() {
@@ -62,32 +74,47 @@ ReadOnlyTree<T>::ReadOnlyTree() {
 
 // empty: returns true if the tree is empty, false otherwise
 template<class T>
-bool ReadOnlyTree<T>::empty()  {
+bool ReadOnlyTree<T>::empty() {
     return rootNode == nullptr;
 }
+
 template<class T>
-typename ReadOnlyTree<T>::Node* ReadOnlyTree<T>::insRoot() {
-    // Create a new node
+typename ReadOnlyTree<T>::Node *ReadOnlyTree<T>::insRoot() {
+
     Node *newNode = new Node;
 
-    // Set the parent of the new node
     newNode->parent = nullptr;
 
-    // Set the first child of the new node
     newNode->firstChild = nullptr;
 
-    // Set the next sibling of the new node
     newNode->nextSibling = nullptr;
 
-    // Set the root of the tree
     rootNode = newNode;
 
-    // Return the new node
     return rootNode;
 }
 
 template<class T>
-typename ReadOnlyTree<T>::Node* ReadOnlyTree<T>::root()  {
+typename ReadOnlyTree<T>::Node *ReadOnlyTree<T>::insRoot(T val) {
+
+    Node *newNode = new Node;
+
+    newNode->parent = nullptr;
+
+    newNode->firstChild = nullptr;
+
+    newNode->nextSibling = nullptr;
+
+    newNode->value = val;
+
+    rootNode = newNode;
+
+    return rootNode;
+}
+
+
+template<class T>
+typename ReadOnlyTree<T>::Node *ReadOnlyTree<T>::root() {
     return rootNode;
 }
 
@@ -97,12 +124,12 @@ typename ReadOnlyTree<T>::Node ReadOnlyTree<T>::parent(Node n) const {
 }
 
 template<class T>
-typename ReadOnlyTree<T>::Node * ReadOnlyTree<T>::firstChild(Node *n) const {
+typename ReadOnlyTree<T>::Node *ReadOnlyTree<T>::firstChild(Node *n) const {
     return n->firstChild;
 }
 
 template<class T>
-typename ReadOnlyTree<T>::Node * ReadOnlyTree<T>::nextSibling(Node *n) const {
+typename ReadOnlyTree<T>::Node *ReadOnlyTree<T>::nextSibling(Node *n) const {
     return n->nextSibling;
 }
 
@@ -129,7 +156,7 @@ void ReadOnlyTree<T>::write(Node *n, const T &val) {
 }
 
 template<class T>
-typename ReadOnlyTree<T>::Node* ReadOnlyTree<T>::insFirst(Node *n) {
+typename ReadOnlyTree<T>::Node *ReadOnlyTree<T>::insFirst(Node *n) {
     // Create a new node
     Node *newNode = new Node;
 
@@ -146,9 +173,25 @@ typename ReadOnlyTree<T>::Node* ReadOnlyTree<T>::insFirst(Node *n) {
     // Return the new node
     return newNode;
 }
+template<class T>
+typename ReadOnlyTree<T>::Node *ReadOnlyTree<T>::insFirst(Node *n, T val) {
+
+    Node *newNode = new Node;
+
+    newNode->parent = n;
+
+    newNode->firstChild = nullptr;
+
+    newNode->value = val;
+
+    n->firstChild = newNode;
+
+    return newNode;
+}
+
 
 template<class T>
-typename ReadOnlyTree<T>::Node* ReadOnlyTree<T>::insLast(Node *n) {
+typename ReadOnlyTree<T>::Node *ReadOnlyTree<T>::insLast(Node *n) {
     // Create a new node
     Node *newNode = new Node;
 
@@ -169,7 +212,7 @@ typename ReadOnlyTree<T>::Node* ReadOnlyTree<T>::insLast(Node *n) {
 }
 
 template<class T>
-typename ReadOnlyTree<T>::Node *ReadOnlyTree<T>::insNext(Node *n) {
+typename ReadOnlyTree<T>::Node *ReadOnlyTree<T>::insNext(Node *n, T val) {
     // Create a new node
     Node *newNode = new Node;
 
@@ -181,6 +224,9 @@ typename ReadOnlyTree<T>::Node *ReadOnlyTree<T>::insNext(Node *n) {
 
     // Set the next sibling of the new node
     newNode->nextSibling = n->nextSibling;
+
+    // Set the value of the new node
+        newNode->value = val;
 
     // Set the next sibling of the given node
     n->nextSibling = newNode;
